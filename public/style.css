@@ -124,11 +124,13 @@ body.obs-mode .stage-9x16 {
 #stadiumCanvas { width: 100%; height: 100%; display: block; }
 
 .result-banner {
-  position: absolute; left: 50%; top: 18%; transform: translateX(-50%);
-  font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 6.2cqi;
-  padding: 1.4cqi 4cqi; border-radius: 16px; pointer-events: none;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
-  animation: popGoal 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  position: absolute; left: 50%; top: 5.5%; transform: translateX(-50%);
+  z-index: 6;
+  font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 6cqi;
+  padding: 1.2cqi 4cqi; border-radius: 16px; pointer-events: none;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.65);
+  animation: popGoal 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
   white-space: nowrap;
 }
 .result-banner.goal {
@@ -142,21 +144,22 @@ body.obs-mode .stage-9x16 {
 @keyframes popGoal { from { transform: translateX(-50%) scale(0.6); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
 
 /* ZONES LEGEND */
-.zones-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2cqi; }
+.zones-legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9cqi; }
 .z-card {
-  display: flex; align-items: center; justify-content: center; gap: 1.2cqi;
+  display: flex; align-items: center; justify-content: center; gap: 0.9cqi;
   background: rgba(12, 18, 42, 0.88); border: 1.5px solid rgba(255, 255, 255, 0.18);
-  border-radius: 11px; padding: 1.1cqi 1cqi; font-size: 2.55cqi; font-weight: 800;
+  border-radius: 10px; padding: 1cqi 0.7cqi; font-size: 2.2cqi; font-weight: 800; white-space: nowrap;
   transition: transform 0.2s, border-color 0.2s, background 0.2s;
 }
 .z-card.active {
   border-color: var(--gold); background: rgba(245, 197, 66, 0.24); transform: scale(1.04);
 }
 .z-num {
-  width: 4.8cqi; height: 4.8cqi; border-radius: 8px;
+  width: 4.2cqi; height: 4.2cqi; border-radius: 7px;
   display: inline-flex; align-items: center; justify-content: center;
-  font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 3cqi; color: #060913;
+  font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.6cqi; color: #060913; flex-shrink: 0;
 }
+.z-a .z-num { background: #f43f5e; color: #fff; }
 .z-1 .z-num { background: #38bdf8; }
 .z-2 .z-num { background: #f5c542; }
 .z-3 .z-num { background: #4ade80; }
