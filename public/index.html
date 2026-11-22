@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚽ Canlı Penalti Dueli — TikTok LIVE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="studio-layout">
+    <!-- 9:16 TIKTOK STAGE -->
+    <div class="stage-wrapper">
+      <div class="stage-9x16" id="stage9x16" data-theme="ucl">
+        <!-- TOP SCOREBOARD HUD -->
+        <header class="top-hud">
+          <div class="title-row">
+            <span class="game-pill">⚽ CANLI PENALTİ</span>
+            <div class="score-pill">
+              <span class="s-goal">⚽ <strong id="goalsTotal">0</strong></span>
+              <span class="s-sep">:</span>
+              <span class="s-save"><strong id="savesTotal">0</strong> 🧤</span>
+            </div>
+          </div>
+
+          <div class="kicker-card" id="kickerCard">
+            <div class="kicker-left">
+              <span class="k-lbl">🎯 ZƏRBƏ VURUR:</span>
+              <strong class="k-name" id="kickerName">Gözlənilir...</strong>
+            </div>
+            <span class="k-zone-badge" id="kickerZone">ZONA —</span>
+          </div>
+
+          <div class="energy-row">
+            <span class="energy-lbl" id="energyLbl">🔥 SUPER ŞUT: 0%</span>
+            <div class="energy-track"><div class="energy-fill" id="energyFill"></div></div>
+          </div>
+        </header>
+
+        <!-- STADIUM CANVAS -->
+        <div class="stadium-box">
+          <canvas id="stadiumCanvas"></canvas>
+          <div class="result-banner hidden" id="resultBanner">⚽ QOOOL!!</div>
+        </div>
+
+        <!-- EASY 1-2-3 TARGET LEGEND -->
+        <div class="zones-legend">
+          <div class="z-card z-1" id="zoneBtn1"><span class="z-num">1</span><span>⬅️ SOL</span></div>
+          <div class="z-card z-2" id="zoneBtn2"><span class="z-num">2</span><span>⬆️ ORTA</span></div>
+          <div class="z-card z-3" id="zoneBtn3"><span class="z-num">3</span><span>➡️ SAĞ</span></div>
+        </div>
+
+        <!-- QUEUE, FEED & TOP SCORERS -->
+        <footer class="bottom-hud">
+          <div class="queue-strip" id="queueStrip">
+            <span class="q-title">⏳ NÖVBƏ:</span>
+            <span class="q-items" id="queueItems">Çatda 1, 2 və ya 3 yaz!</span>
+          </div>
+          <div class="feed-strip" id="feedStrip">
+            <span>❤️ Like = Super Şut • 🎁 Hədiyyə = VIP Qızıl Top!</span>
+          </div>
+          <div class="lb-card">
+            <div class="lb-head">
+              <span>🏆 BOMBARDIRLƏR (TOP 3)</span>
+              <span class="live-badge" id="liveBadge">● HAZIR</span>
+            </div>
+            <div class="lb-list" id="lbList">
+              <div class="lb-empty">İlk qoldan sonra siyahı açılacaq</div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- HOST CONTROL PANEL -->
+    <aside class="control-panel" id="controlPanel">
+      <div class="panel-head">
+        <h2>⚽ Canlı Penalti Dueli</h2>
+        <p>Çatda 1 (Sol), 2 (Orta), 3 (Sağ) yazaraq penalti vur!</p>
+        <div class="panel-badges">
+          <span class="conn-chip" id="connChip">Qoşulur...</span>
+          <a class="obs-link" href="?overlay=1" target="_blank" rel="noopener">📺 OBS Overlay</a>
+        </div>
+      </div>
+
+      <div class="ctrl-card">
+        <h3>🧤 Qapıçı və Oyun İdarəsi</h3>
+        <div class="btn-row">
+          <button class="btn primary" id="btnKickNow">⚡ Zərbəni İndi Vur</button>
+          <button class="btn accent" id="btnToggleBots">🤖 Botlar: AÇIQ</button>
+        </div>
+        <div class="btn-row mt-8">
+          <button class="btn diff-btn" data-diff="easy">Asan Qapıçı</button>
+          <button class="btn diff-btn active" data-diff="normal">Normal</button>
+          <button class="btn diff-btn" data-diff="hard">Çətin</button>
+        </div>
+        <div class="btn-row mt-8">
+          <button class="btn" id="btnMute">🔊 Səs Açıqdır</button>
+          <button class="btn" id="btnTestGoal">⚽ Qol Səsi</button>
+          <button class="btn danger" id="btnReset">🔄 Sıfırla</button>
+        </div>
+      </div>
+
+      <div class="ctrl-card">
+        <h3>🎨 Stadion Teması</h3>
+        <div class="btn-row">
+          <button class="btn theme-btn active" data-theme="ucl">🌌 ÇL Gecəsi</button>
+          <button class="btn theme-btn" data-theme="gold">👑 Qızıl Final</button>
+          <button class="btn theme-btn" data-theme="azerbaijan">🇦🇿 Azərbaycan</button>
+        </div>
+      </div>
+
+      <div class="ctrl-card">
+        <h3>📡 TikTok LIVE Kanal</h3>
+        <div class="input-row">
+          <input type="text" id="tiktokInput" value="bakuremixlab" placeholder="istifadəçi adı..." />
+          <button class="btn primary" id="btnConnect">Qoşul</button>
+          <button class="btn danger" id="btnDisconnect">Kəs</button>
+        </div>
+        <div class="status-txt" id="tiktokStatus">Status: Bağlantı hazırdır</div>
+      </div>
+
+      <div class="ctrl-card">
+        <h3>🧪 Zərbə Testi</h3>
+        <div class="btn-row">
+          <button class="btn" data-test-zone="1">1 • Sol</button>
+          <button class="btn" data-test-zone="2">2 • Orta</button>
+          <button class="btn" data-test-zone="3">3 • Sağ</button>
+          <button class="btn warn" id="btnTestVip">👑 VIP Top</button>
+        </div>
+        <div class="input-row mt-8">
+          <input type="text" id="obsUrlInput" readonly value="" />
+          <button class="btn primary" id="btnCopyUrl">📋 Kopyala</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
