@@ -1,0 +1,18 @@
+{
+  "name": "penalti-live-oyun",
+  "version": "1.0.0",
+  "description": "Canli Penalti Dueli — 1, 2, 3 Reqemle Idare Olunan TikTok LIVE Futbol Oyunu",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "tiktok-live-connector": "^2.5.0"
+  }
+}
