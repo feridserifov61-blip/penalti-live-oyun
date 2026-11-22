@@ -140,10 +140,16 @@ function spawnBotShot() {
   };
 }
 
-function enqueueShot({ uniqueId, nickname, zone, isVip = false, giftName = '' }) {
-  // Prevent spam: max 1 queued normal shot per viewer at a time (VIP always allowed)
-  if (!isVip && game.queue.some((item) => item.uniqueId === uniqueId)) {
-    return false;
+function enqueueShot({ uniqueId, nickname, zone, explicit = false, isVip = false, giftName = '' }) {
+  if (!isVip) {
+    const existing = game.queue.find((item) => item.uniqueId === uniqueId);
+    if (existing) {
+      if (explicit) {
+        existing.zone = zone;
+        broadcastState();
+      }
+      return false;
+    }
   }
 
   const shot = {
@@ -157,19 +163,24 @@ function enqueueShot({ uniqueId, nickname, zone, isVip = false, giftName = '' })
   };
 
   if (isVip) {
-    // VIP goes right to the front (ahead of bots and regular queue)
     game.queue.unshift(shot);
     pushFeed(`🎁 ${shot.nickname} VIP QIZIL TOP atdı!`, 'vip');
   } else {
-    // Insert real viewer ahead of any queued bots
     const firstBotIdx = game.queue.findIndex((q) => q.isBot);
     if (firstBotIdx === -1) game.queue.push(shot);
     else game.queue.splice(firstBotIdx, 0, shot);
   }
 
-  if (game.queue.length > 35) game.queue.length = 35;
+  if (game.queue.length > 250) game.queue.length = 250;
   broadcastState();
   return true;
+}
+
+function getStageTimings() {
+  const qLen = game.queue.length;
+  if (qLen >= 12) return { aim: 700, kick: 750, result: 900 };
+  if (qLen >= 4) return { aim: 1000, kick: 850, result: 1150 };
+  return { aim: 1450, kick: 900, result: 1650 };
 }
 
 function pickNextShot() {
@@ -206,7 +217,7 @@ function pickNextShot() {
   io.emit('penalty-fx', { type: 'whistle' });
   broadcastState();
 
-  game.loopTimer = setTimeout(executeKick, 1500);
+  game.loopTimer = setTimeout(executeKick, getStageTimings().aim);
 }
 
 function executeKick() {
@@ -238,7 +249,7 @@ function executeKick() {
   io.emit('penalty-fx', { type: 'kick', zone: shot.zone, keeperZone, isSuper: shot.isSuper });
   broadcastState();
 
-  game.loopTimer = setTimeout(finishShotResult, 950);
+  game.loopTimer = setTimeout(finishShotResult, getStageTimings().kick);
 }
 
 function finishShotResult() {
@@ -292,24 +303,26 @@ function finishShotResult() {
   }
 
   broadcastState();
-  game.loopTimer = setTimeout(pickNextShot, 1750);
+  game.loopTimer = setTimeout(pickNextShot, getStageTimings().result);
 }
 
 function parseZoneCommand(rawText) {
-  const clean = String(rawText || '').trim().toLowerCase();
+  const clean = String(rawText || '').trim().toLowerCase().replace(/а/g, 'a');
   if (!clean) return null;
-  if (/^[1¹]\b|^1[!?.]*$|^(sol|left|a)$/i.test(clean)) return 1;
-  if (/^[2²]\b|^2[!?.]*$|^(orta|center|mid|b)$/i.test(clean)) return 2;
-  if (/^[3³]\b|^3[!?.]*$|^(sag|sağ|right|c)$/i.test(clean)) return 3;
-  // Any casual join keyword picks random zone 1..3
-  if (/^(go|vur|qol|gol|penalti|oyna|\+)$/i.test(clean)) return 1 + Math.floor(Math.random() * 3);
+  if (/^[1¹]\b|^1[!?.]*$|^(sol|left|a\s*1)$/i.test(clean)) return { zone: 1, explicit: true };
+  if (/^[2²]\b|^2[!?.]*$|^(orta|center|mid|a\s*2)$/i.test(clean)) return { zone: 2, explicit: true };
+  if (/^[3³]\b|^3[!?.]*$|^(sag|sağ|right|a\s*3)$/i.test(clean)) return { zone: 3, explicit: true };
+  // "a" (or go/oyna/vur/+) joins the strict arrival queue with random corner
+  if (/^(a|go|vur|qol|gol|penalti|oyna|\+)[!?.]*$/i.test(clean)) {
+    return { zone: 1 + Math.floor(Math.random() * 3), explicit: false };
+  }
   return null;
 }
 
 function handleViewerChat({ uniqueId, nickname, comment }) {
-  const zone = parseZoneCommand(comment);
-  if (!zone) return;
-  enqueueShot({ uniqueId, nickname, zone, isVip: false });
+  const parsed = parseZoneCommand(comment);
+  if (!parsed) return;
+  enqueueShot({ uniqueId, nickname, zone: parsed.zone, explicit: parsed.explicit, isVip: false });
 }
 
 function handleViewerLike(count) {
